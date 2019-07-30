@@ -142,7 +142,7 @@ namespace BFS_c_sharp.Model
 
             var queue = new Queue<LinkedList<UserNode>>();
             var checkedFriends = new HashSet<UserNode>();
-            var shouldQueueMore = true;
+            int closest = int.MaxValue;
 
             foreach (var friend in user1.Friends)
             {
@@ -158,16 +158,16 @@ namespace BFS_c_sharp.Model
                 {
                     var newList = new LinkedList<UserNode>(list);
                     newList.AddLast(friend);
-                    if (friend == user2)
+                    if (friend == user2 && closest >= newList.Count)
                     {
                         shortestPaths.Add(newList);
-                        shouldQueueMore = false;
+                        closest = newList.Count;
                     }
                     if (!checkedFriends.Contains(friend))
                     {
                         checkedFriends.Add(friend);
                     }
-                    if (shouldQueueMore)
+                    if (newList.Count < closest)
                     {
                         queue.Enqueue(newList);
                     }
