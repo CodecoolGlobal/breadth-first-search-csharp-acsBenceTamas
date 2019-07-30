@@ -84,7 +84,44 @@ namespace BFS_c_sharp.Model
                 throw new ArgumentOutOfRangeException("Depth must be at least 1.");
             }
 
-            return null;
+            int currentDepth = 1;
+
+            HashSet<UserNode> friends = new HashSet<UserNode>();
+            Queue<FriendDistance> friendsToDeepen = new Queue<FriendDistance>();
+            HashSet<UserNode> friendsDeepened = new HashSet<UserNode>();
+
+            foreach (var friend in user.Friends)
+            {
+                friends.Add(friend);
+                friendsDeepened.Add(friend);
+            }
+            if (depth > currentDepth)
+            {
+                foreach (var friend in user.Friends)
+                {
+                    friendsDeepened.Add(friend);
+                    friendsToDeepen.Enqueue(new FriendDistance { Friend = friend, Distance = currentDepth });
+                }
+            }
+
+            while (friendsToDeepen.Count > 0)
+            {
+                var friendDistance = friendsToDeepen.Dequeue();
+                friends.Add(friendDistance.Friend);
+                if (friendDistance.Distance < depth)
+                {
+                    foreach (var friend in friendDistance.Friend.Friends)
+                    {
+                        if (!friendsDeepened.Contains(friend))
+                        {
+                            friendsToDeepen.Enqueue(new FriendDistance { Friend = friend, Distance = currentDepth });
+                            friendsDeepened.Add(friend);
+                        }
+                    }
+                }
+            }
+
+            return friends.ToList();
         }
 
         public class FriendDistance

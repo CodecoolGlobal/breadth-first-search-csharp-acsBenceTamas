@@ -145,5 +145,107 @@ namespace BFS_c_sharp.Model.Tests
 
             Assert.AreEqual(expected, distance);
         }
+
+        [TestMethod()]
+        public void GetFriendsOfFriends_GivenADepthOf0_ThrowsArgumentOutOfRangeException()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+
+            graph.Add(user1);
+
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => graph.GetFriendsOfFriends(user1, 0));
+        }
+
+        [TestMethod()]
+        public void GetFriendsOfFriends_GivenADepthOf1WithNoFriends_ReturnsEmptyList()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+
+            graph.Add(user1);
+
+            List<UserNode> friends = graph.GetFriendsOfFriends(user1, 1);
+
+            int result = friends.Count;
+            int expected = 0;
+
+            Assert.AreEqual(result, expected);
+        }
+
+        [TestMethod()]
+        public void GetFriendsOfFriends_GivenADepthOf1_ReturnsImmediateFriends()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+            UserNode user2 = new UserNode("A", "B");
+            UserNode user2b = new UserNode("A", "C");
+            UserNode user3 = new UserNode("A", "D");
+
+            user1.AddFriend(user2);
+            user1.AddFriend(user2b);
+            user2.AddFriend(user3);
+
+            graph.Add(user1);
+            graph.Add(user2);
+            graph.Add(user2b);
+            graph.Add(user3);
+
+            List<UserNode> friends = graph.GetFriendsOfFriends(user1, 1);
+
+            Assert.IsTrue(friends.Contains(user2) && friends.Contains(user2b) && !friends.Contains(user3));
+        }
+
+        [TestMethod()]
+        public void GetFriendsOfFriends_GivenADepthOf1_ContainsFriendsOnlyOnce()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+            UserNode user2 = new UserNode("A", "B");
+            UserNode user2b = new UserNode("A", "C");
+
+            user1.AddFriend(user2);
+            user1.AddFriend(user2b);
+            user2.AddFriend(user2b);
+
+            graph.Add(user1);
+            graph.Add(user2);
+            graph.Add(user2b);
+
+            List<UserNode> friends = graph.GetFriendsOfFriends(user1, 1);
+
+            int result = friends.Count;
+            int expected = 2;
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void GetFriendsOfFriends_GivenADepthOf2_ReturnsFriendsOfFriends()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+            UserNode user2 = new UserNode("A", "B");
+            UserNode user2b = new UserNode("A", "C");
+            UserNode user3 = new UserNode("A", "D");
+
+            user1.AddFriend(user2);
+            user1.AddFriend(user2b);
+            user2.AddFriend(user3);
+
+            graph.Add(user1);
+            graph.Add(user2);
+            graph.Add(user2b);
+            graph.Add(user3);
+
+            List<UserNode> friends = graph.GetFriendsOfFriends(user1, 2);
+
+            Assert.IsTrue(friends.Contains(user2) && friends.Contains(user2b) && friends.Contains(user3));
+        }
     }
 }
