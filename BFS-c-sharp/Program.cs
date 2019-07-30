@@ -14,7 +14,12 @@ namespace BFS_c_sharp
 
             foreach (var user in graph.Users)
             {
-                Console.WriteLine(user);
+                foreach (var otherUser in graph.Users)
+                {
+                    int distance = graph.GetDistance(user, otherUser);
+
+                    Console.WriteLine($"{user} is {distance} friends away from {otherUser}");
+                }
             }
 
             Console.WriteLine("Done");
