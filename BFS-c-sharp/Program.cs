@@ -11,7 +11,7 @@ namespace BFS_c_sharp
         {
             Graph graph = new Graph();
             RandomDataGenerator generator = new RandomDataGenerator();
-            graph.AddRange(generator.Generate(3));
+            graph.AddRange(generator.Generate(4));
 
             foreach (var user in graph.Users)
             {
@@ -30,7 +30,7 @@ namespace BFS_c_sharp
 
                     foreach (var path in paths)
                     {
-                        sb.Append("\t");
+                        sb.Append($"\t ({path.Count})");
                         sb.Append("[");
                         foreach (var userNode in path)
                         {
@@ -41,7 +41,7 @@ namespace BFS_c_sharp
                     }
 
                     Console.WriteLine($"{user} is {distance} friends away from {otherUser}");
-                    Console.WriteLine($"The shortest routes between them are: {sb.ToString()}");
+                    Console.WriteLine($"The shortest routes between them are: \n{sb.ToString()}");
                 }
             }
 
