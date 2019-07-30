@@ -8,10 +8,11 @@ namespace BFS_c_sharp
     {
         static void Main(string[] args)
         {
+            Graph graph = new Graph();
             RandomDataGenerator generator = new RandomDataGenerator();
-            List<UserNode> users = generator.Generate();
+            graph.AddRange(generator.Generate());
 
-            foreach (var user in users)
+            foreach (var user in graph.Users)
             {
                 Console.WriteLine(user);
             }
