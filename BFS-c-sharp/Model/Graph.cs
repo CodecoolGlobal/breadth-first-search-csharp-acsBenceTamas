@@ -124,6 +124,60 @@ namespace BFS_c_sharp.Model
             return friends.ToList();
         }
 
+        public List<LinkedList<UserNode>> GetShortestPaths(UserNode user1, UserNode user2)
+        {
+            var shortestPaths = new List<LinkedList<UserNode>>();
+
+            if (user1 == user2)
+            {
+                shortestPaths.Add(new LinkedList<UserNode>(new UserNode[] { user1 }));
+                return shortestPaths;
+            }
+
+            if (user1.Friends.Contains(user2))
+            {
+                shortestPaths.Add(new LinkedList<UserNode>(new UserNode[] { user1, user2 }));
+                return shortestPaths;
+            }
+
+            var queue = new Queue<LinkedList<UserNode>>();
+            var checkedFriends = new HashSet<UserNode>();
+            var shouldQueueMore = true;
+
+            foreach (var friend in user1.Friends)
+            {
+                var list = new LinkedList<UserNode>(new UserNode[] { user1, friend });
+                queue.Enqueue(list);
+                checkedFriends.Add(friend);
+            }
+
+            while (queue.Count > 0)
+            {
+                var list = queue.Dequeue();
+                foreach (var friend in list.Last.Value.Friends)
+                {
+                    var newList = new LinkedList<UserNode>(list);
+                    newList.AddLast(friend);
+                    if (friend == user2)
+                    {
+                        shortestPaths.Add(newList);
+                        shouldQueueMore = false;
+                    }
+                    if (!checkedFriends.Contains(friend))
+                    {
+                        checkedFriends.Add(friend);
+                    }
+                    if (shouldQueueMore)
+                    {
+                        queue.Enqueue(newList);
+                    }
+                }
+            }
+
+            return shortestPaths;
+
+        }
+
         public class FriendDistance
         {
             public UserNode Friend { get; set; }

@@ -247,5 +247,146 @@ namespace BFS_c_sharp.Model.Tests
 
             Assert.IsTrue(friends.Contains(user2) && friends.Contains(user2b) && friends.Contains(user3));
         }
+
+        [TestMethod()]
+        public void GetShortestPath_GivenItself_ReturnsSingleListWithItself()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+
+            graph.Add(user1);
+
+            var paths = graph.GetShortestPaths(user1, user1);
+
+            int resultPathsSize = paths.Count;
+            int expectedPathsSize = 1;
+
+            Assert.AreEqual(expectedPathsSize, resultPathsSize);
+
+            var resultPath = paths[0];
+            var expectedPath = new LinkedList<UserNode>(new UserNode[] { user1 });
+
+            CollectionAssert.AreEqual(expectedPath, resultPath);
+        }
+
+        [TestMethod()]
+        public void GetShortestPath_GivenNoConnections_ReturnsEmptyList()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+            UserNode user2 = new UserNode("A", "B");
+
+            graph.Add(user1);
+            graph.Add(user2);
+
+            var paths = graph.GetShortestPaths(user1, user2);
+
+            int result = paths.Count;
+            int expected = 0;
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void GetShortestPath_GivenDirectFriend_ReturnsSingleList()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+            UserNode user2 = new UserNode("A", "B");
+
+            user1.AddFriend(user2);
+
+            graph.Add(user1);
+            graph.Add(user2);
+
+            var paths = graph.GetShortestPaths(user1, user2);
+
+            int resultPathsSize = paths.Count;
+            int expectedPathsSize = 1;
+
+            Assert.AreEqual(expectedPathsSize, resultPathsSize);
+
+            var resultPath = paths[0];
+            var expectedPath = new LinkedList<UserNode>(new UserNode[] { user1, user2 });
+
+            CollectionAssert.AreEqual(expectedPath, resultPath);
+        }
+
+        [TestMethod()]
+        public void GetShortestPath_GivenTwoPaths_ReturnsOnlyShorterOne()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+            UserNode user2 = new UserNode("A", "B");
+            UserNode user3 = new UserNode("A", "C");
+
+            user1.AddFriend(user2);
+            user2.AddFriend(user3);
+            user1.AddFriend(user3);
+
+            graph.Add(user1);
+            graph.Add(user2);
+            graph.Add(user3);
+
+            var paths = graph.GetShortestPaths(user1, user3);
+
+            int resultPathsSize = paths.Count;
+            int expectedPathsSize = 1;
+
+            Assert.AreEqual(expectedPathsSize, resultPathsSize);
+
+            var resultPath = paths[0];
+            var expectedPath = new LinkedList<UserNode>(new UserNode[] { user1, user3 });
+
+            CollectionAssert.AreEqual(expectedPath, resultPath);
+        }
+
+        [TestMethod()]
+        public void GetShortestPath_GivenTwoEqualPaths_ReturnsBoth()
+        {
+            Graph graph = new Graph();
+
+            UserNode user1 = new UserNode("A", "A");
+            UserNode user2 = new UserNode("A", "B");
+            UserNode user2b = new UserNode("A", "B");
+            UserNode user3 = new UserNode("A", "C");
+
+            user1.AddFriend(user2);
+            user1.AddFriend(user2b);
+            user2b.AddFriend(user3);
+            user2.AddFriend(user3);
+
+            graph.Add(user1);
+            graph.Add(user2);
+            graph.Add(user2b);
+            graph.Add(user3);
+
+            var paths = graph.GetShortestPaths(user1, user3);
+
+            var expectedPath1 = new LinkedList<UserNode>(new UserNode[] { user1, user2, user3 });
+            var expectedPath2 = new LinkedList<UserNode>(new UserNode[] { user1, user2b, user3 });
+
+            bool path1Found = false;
+            bool path2Found = false;
+
+            foreach (var list in paths)
+            {
+                if (list.SequenceEqual(expectedPath1))
+                {
+                    path1Found = true;
+                }
+
+                if (list.SequenceEqual(expectedPath2))
+                {
+                    path2Found = true;
+                }
+            }
+
+            Assert.IsTrue(path1Found && path2Found);
+        }
     }
 }
