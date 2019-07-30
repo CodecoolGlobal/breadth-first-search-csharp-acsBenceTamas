@@ -1,6 +1,7 @@
 ﻿using BFS_c_sharp.Model;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace BFS_c_sharp
 {
@@ -10,15 +11,37 @@ namespace BFS_c_sharp
         {
             Graph graph = new Graph();
             RandomDataGenerator generator = new RandomDataGenerator();
-            graph.AddRange(generator.Generate());
+            graph.AddRange(generator.Generate(3));
 
             foreach (var user in graph.Users)
             {
+                var friends = graph.GetFriendsOfFriends(user, 2);
+                Console.WriteLine($"The closest people to {user} are: ");
+                foreach (var friend in friends)
+                {
+                    Console.WriteLine($"\t{friend}");
+                }
+
                 foreach (var otherUser in graph.Users)
                 {
                     int distance = graph.GetDistance(user, otherUser);
+                    var paths = graph.GetShortestPaths(user, otherUser);
+                    var sb = new StringBuilder();
+
+                    foreach (var path in paths)
+                    {
+                        sb.Append("\t");
+                        sb.Append("[");
+                        foreach (var userNode in path)
+                        {
+                            sb.Append(userNode);
+                            sb.Append(",");
+                        }
+                        sb.Append("]\n");
+                    }
 
                     Console.WriteLine($"{user} is {distance} friends away from {otherUser}");
+                    Console.WriteLine($"The shortest routes between them are: {sb.ToString()}");
                 }
             }
 

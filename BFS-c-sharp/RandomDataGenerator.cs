@@ -18,13 +18,13 @@ namespace BFS_c_sharp
             "Bryar", "Kibo", "Myles", "Hillary", "Lydia", "Dolan", "Lucian", "Prescott"
         };
 
-        public List<UserNode> Generate()
+        public List<UserNode> Generate(int depth)
         {
             List<UserNode> users = new List<UserNode>();
             UserNode firstUser = GenerateNewUser();
             users.Add(firstUser);
             // first generate and connect users in a star shaped tree
-            GenerateTree(firstUser, users, 4);
+            GenerateTree(firstUser, users, depth);
 
             for (int i = 0; i < users.Count - 30; i++)
             {
