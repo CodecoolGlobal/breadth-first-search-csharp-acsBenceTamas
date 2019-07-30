@@ -9,21 +9,30 @@ namespace BFS_c_sharp
     {
         static void Main(string[] args)
         {
+            var rng = new Random();
             Graph graph = new Graph();
             RandomDataGenerator generator = new RandomDataGenerator();
             graph.AddRange(generator.Generate(4));
+            var users = new List<UserNode>(graph.Users);
+            int max = Math.Min(3, users.Count);
+            Console.WriteLine($"Total number of people in the graph: {users.Count}");
 
-            foreach (var user in graph.Users)
+            for (int i = 0; i < max; i++)
             {
-                var friends = graph.GetFriendsOfFriends(user, 2);
-                Console.WriteLine($"The closest people to {user} are: ");
-                foreach (var friend in friends)
+                var user = users[rng.Next(users.Count)];
+                if (i == 0)
                 {
-                    Console.WriteLine($"\t{friend}");
+                    var friends = graph.GetFriendsOfFriends(user, 2);
+                    Console.WriteLine($"The closest people to {user} are: ");
+                    foreach (var friend in friends)
+                    {
+                        Console.WriteLine($"\t{friend}");
+                    }
                 }
 
-                foreach (var otherUser in graph.Users)
+                for (int j = 0; j < max; j++)
                 {
+                    var otherUser = users[rng.Next(users.Count)];
                     int distance = graph.GetDistance(user, otherUser);
                     var paths = graph.GetShortestPaths(user, otherUser);
                     var sb = new StringBuilder();
